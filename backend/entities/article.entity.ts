@@ -11,7 +11,7 @@ import { Category } from "./category.entity";
 import { ArticleFeature } from "./article-feature.entity";
 import { ArticlePrice } from "./article-price.entity";
 import { CartArticle } from "./cart-article.entity";
-import { Photo } from "./Photo";
+import { Photo } from "./photo.entity";
 
 @Index("fk_article_category_id", ["categoryId"], {})
 @Entity("article")
