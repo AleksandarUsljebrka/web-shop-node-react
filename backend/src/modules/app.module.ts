@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './controllers/app.controller';
+import { AppController } from '../controllers/app.controller';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseConfiguration } from 'config/database.configuration';
 import { Administrator } from 'entities/administrator.entity';
-import { AdministratorService } from './services/administrator/administrator.service';
+import { AdministratorService } from '../services/administrator/administrator.service';
 import { ArticleFeature } from 'entities/article-feature.entity';
 import { ArticlePrice } from 'entities/article-price.entity';
 import { Article } from 'entities/article.entity';
@@ -15,7 +15,10 @@ import { Feature } from 'entities/feature.entity';
 import { Order } from 'entities/order.entity';
 import { Photo } from 'entities/photo.entity';
 import { User } from 'entities/user.entity';
-import { AdministratorController } from './controllers/api/administrator.controller';
+import { AdministratorController } from '../controllers/api/administrator.controller';
+import { CategoryModule } from './category.module';
+import { ArticleModule } from './article.module';
+import { AdministratorModule } from './administrator.module';
 
 @Module({
   imports: [
@@ -40,9 +43,11 @@ import { AdministratorController } from './controllers/api/administrator.control
         User
       ]
     }),
-    TypeOrmModule.forFeature([Administrator])
+    AdministratorModule,
+    CategoryModule,
+    ArticleModule
   ],
-  controllers: [AppController, AdministratorController],
-  providers: [AdministratorService],
+  controllers: [AppController],
+  providers: [],
 })
 export class AppModule {}

@@ -12,22 +12,22 @@ export class AdministratorController{
     ){}
 
     @Get()
-    getAllAdmins():Promise<Administrator[]>{
+    findAll():Promise<Administrator[]>{
         return this.administratorService.getAll();
     }
    
     @Get('/:id')
-    getById(@Param('id') administratorId:number):Promise<Administrator | ApiResponse>{
-        return this.administratorService.getById(administratorId);
+    findById(@Param('id') administratorId:number):Promise<Administrator | ApiResponse>{
+        return this.administratorService.findById(administratorId);
     }
 
     @Post()
-    add(@Body() data:AddAdministratorDto):Promise<Administrator | ApiResponse>{
-        return this.administratorService.add(data);
+    create(@Body() data:AddAdministratorDto):Promise<Administrator | ApiResponse>{
+        return this.administratorService.create(data);
     }
 
     @Put('/:id')
-    edit(@Param('id') id:number, @Body() data:EditAdministratorDto):Promise<Administrator | ApiResponse>{
-        return this.administratorService.editById(id,data);
+    update(@Param('id') id:number, @Body() data:EditAdministratorDto):Promise<Administrator | ApiResponse>{
+        return this.administratorService.update(id,data);
     }
 }

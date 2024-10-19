@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { error } from 'console';
 import { Administrator } from 'entities/administrator.entity';
-import { resolve } from 'path';
 import { AddAdministratorDto } from 'src/dtos/administrator/add.administrator.dto';
 import { EditAdministratorDto } from 'src/dtos/administrator/edit.administrator.dto';
 import { ApiResponse } from 'src/misc/api.response.class';
 import { Repository } from 'typeorm';
+import crypto from 'crypto';
 
 @Injectable()
 export class AdministratorService {
@@ -18,7 +17,7 @@ export class AdministratorService {
     getAll():Promise<Administrator[]>{
         return this.administrator.find();
     }
-    async getById(id:number):Promise<Administrator | ApiResponse>{
+    async findById(id:number):Promise<Administrator | ApiResponse>{
         let admin:Administrator = await this.administrator.findOne({where:{administratorId:id}});
         
         if(admin === undefined || admin === null){
@@ -26,10 +25,9 @@ export class AdministratorService {
                 resolve(new ApiResponse('error', -1002));
             });
         }
+        return this.administrator.findOne({where:{administratorId:id}});
     }
-    add(data:AddAdministratorDto):Promise<Administrator | ApiResponse>{
-        const crypto = require('crypto');
-        
+    create(data:AddAdministratorDto):Promise<Administrator | ApiResponse>{
         const passwordHash = crypto.createHash('sha512');
         passwordHash.update(data.password);
 
@@ -49,7 +47,7 @@ export class AdministratorService {
         })
     }
 
-    async editById(id:number, data:EditAdministratorDto):Promise<Administrator | ApiResponse>{
+    async update(id:number, data:EditAdministratorDto):Promise<Administrator | ApiResponse>{
         let admin:Administrator = await this.administrator.findOne({where:{administratorId:id}});
         
         if(admin === undefined || admin === null){
@@ -57,7 +55,6 @@ export class AdministratorService {
                 resolve(new ApiResponse('error', -1002));
             });
         }
-        const crypto = require('crypto');
         const passwordHash = crypto.createHash('sha512');
         passwordHash.update(data.password);
         const passwordHashString = passwordHash.digest('hex').toUpperCase();

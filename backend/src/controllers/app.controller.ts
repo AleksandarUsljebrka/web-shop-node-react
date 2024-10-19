@@ -6,10 +6,6 @@ import { AdministratorService } from '../services/administrator/administrator.se
 export class AppController {
   constructor(private readonly administratorService: AdministratorService) {}
 
-  @Get('api/eo')
-  get():string{
-    return "EOOO"
-  }
   @Get('api/administrator')
   getAllAdmins():Promise<Administrator[]>{
     return this.administratorService.getAll();
