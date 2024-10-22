@@ -19,6 +19,15 @@ export class PhotoService {
     })
   }
 
+  async findAll():Promise<Photo[]>{
+    try {
+      return await this.photo.find();
+    } catch (error) {
+      throw new Error('Could not retrieve photos');
+    }
+  }
+
+  
   async resizeImage(photo, resizePhotoSettings){
     const filePath = photo.path;
     const fileName = photo.filename;

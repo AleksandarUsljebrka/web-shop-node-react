@@ -7,6 +7,9 @@ export class UpdateArticleDto  {
     description:string;
     status:ArticleStatusEnum;
     isPromoted:number;
-    createdAt:Date;
-
+    price:number;
+    features:{
+        featureId:number;
+        value:string;
+    }[]
 }
