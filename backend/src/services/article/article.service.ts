@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ArticleFeature } from 'entities/article-feature.entity';
-import { ArticlePrice } from 'entities/article-price.entity';
-import { Article } from 'entities/article.entity';
-import { Feature } from 'entities/feature.entity';
+import { ArticleFeature } from 'src/entities/article-feature.entity';
+import { ArticlePrice } from 'src/entities/article-price.entity';
+import { Article } from 'src/entities/article.entity';
+import { Feature } from 'src/entities/feature.entity';
 import { CreateArticleDto } from 'src/dtos/article/create.article.dto';
 import { UpdateArticleDto } from 'src/dtos/article/update.article.dto';
 import { ApiResponse } from 'src/misc/api.response.class';
@@ -57,17 +57,6 @@ export class ArticleService {
             'articleFeatures.feature'
         ]
         })
-    // Object.assign(article, createArticleDto);
-     
-    // return new Promise(resolve =>{
-    //   this.article.save(article)
-    //   .then(data => {
-    //     resolve(data);
-    //   })
-    //   .catch(err =>{
-    //     resolve(new ApiResponse('error', -1001));
-    //   })
-    // });
   }
 
   findAll() {

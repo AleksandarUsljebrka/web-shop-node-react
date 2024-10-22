@@ -1,13 +1,13 @@
 import { Controller, Get, Post, Body, Param, Delete, Put, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { Article } from 'entities/article.entity';
+import { Article } from 'src/entities/article.entity';
 import { CreateArticleDto } from 'src/dtos/article/create.article.dto';
 import { UpdateArticleDto } from 'src/dtos/article/update.article.dto';
 import { ApiResponse } from 'src/misc/api.response.class';
 import { ArticleService } from 'src/services/article/article.service';
 import {diskStorage} from 'multer';
 import { StorageConfig } from 'config/storage.config';
-import { Photo } from 'entities/photo.entity';
+import { Photo } from 'src/entities/photo.entity';
 import { PhotoService } from 'src/services/photo/photo.service';
 import filetype from 'magic-bytes.js';
 // import * as fileType from 'file-type';
@@ -30,7 +30,7 @@ export class ArticleController {
   @UseInterceptors(
     FileInterceptor('photo',{
         storage:diskStorage({
-            destination:StorageConfig.photoDestination,
+            destination:StorageConfig.photo.destination,
             filename:(req,file,callback)=>{
                 let original:string = file.originalname;
                 
@@ -64,7 +64,7 @@ export class ArticleController {
         },
         limits:{
             files:1,
-            fileSize:StorageConfig.photoMaxSize
+            fileSize:StorageConfig.photo.maxSize
         }
     })
   )
@@ -81,15 +81,15 @@ export class ArticleController {
         unlinkSync(photo.path);
         return new ApiResponse('error', -4002, "Can not detect file type!");
     }
-    if (!StorageConfig.allowedTypes.includes(fileTypeResult)) {
+    if (!StorageConfig.photo.allowedTypes.includes(fileTypeResult)) {
         unlinkSync(photo.path);
         
         return new ApiResponse('error', -4002, "Does not support file type!");
 
     }
 
-    this.photoService.createThumbImage(photo);
-    this.photoService.createSmallImage(photo);
+    this.photoService.resizeImage(photo, StorageConfig.photo.resize.small);
+    this.photoService.resizeImage(photo,StorageConfig.photo.resize.thumb);
 
     const newPhoto:Photo = new Photo();
     newPhoto.articleId = articleId;
