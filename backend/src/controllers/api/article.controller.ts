@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Put, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseInterceptors, UploadedFile, Req } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Article } from 'entities/article.entity';
 import { CreateArticleDto } from 'src/dtos/article/create.article.dto';
@@ -7,9 +7,12 @@ import { ApiResponse } from 'src/misc/api.response.class';
 import { ArticleService } from 'src/services/article/article.service';
 import {diskStorage} from 'multer';
 import { StorageConfig } from 'config/storage.config';
-import { fileName } from 'typeorm-model-generator/dist/src/NamingStrategy';
 import { Photo } from 'entities/photo.entity';
 import { PhotoService } from 'src/services/photo/photo.service';
+import filetype from 'magic-bytes.js';
+// import * as fileType from 'file-type';
+import {unlinkSync, readFileSync } from 'fs';
+import { fileTypeFromFile } from 'file-type';
 
 @Controller('api/article')
 export class ArticleController {
@@ -69,10 +72,25 @@ export class ArticleController {
     if(req.fileFilterError){
         return new ApiResponse('error', -4002, req.fileFilterError);
     }
+    
     if(!photo){
         return new ApiResponse('error', -4002, 'File not uploaded!');
     }
-   
+    const fileTypeResult = filetype(readFileSync(photo.path))[0]?.typename;
+    if(!fileTypeResult){
+        unlinkSync(photo.path);
+        return new ApiResponse('error', -4002, "Can not detect file type!");
+    }
+    if (!StorageConfig.allowedTypes.includes(fileTypeResult)) {
+        unlinkSync(photo.path);
+        
+        return new ApiResponse('error', -4002, "Does not support file type!");
+
+    }
+
+    this.photoService.createThumbImage(photo);
+    this.photoService.createSmallImage(photo);
+
     const newPhoto:Photo = new Photo();
     newPhoto.articleId = articleId;
     newPhoto.imagePath = photo.filename;

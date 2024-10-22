@@ -15,12 +15,12 @@ export class AuthMiddleware implements NestMiddleware{
         }
         const token = req.headers.authorization;
 
-        // const tokenParts = token.split(' ');
-        // if(tokenParts.length !== 2){
-        //     throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
-        // }
-        // const tokenString = tokenParts[1];
-        const jwtData:JwtDataAdministratorDto = jwt.verify(token, jwtSecret);
+        const tokenParts = token.split(' ');
+        if(tokenParts.length !== 2){
+            throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
+        }
+        const tokenString = tokenParts[1];
+        const jwtData:JwtDataAdministratorDto = jwt.verify(tokenString, jwtSecret);
         if(jwtData === null || jwtData === undefined){
             throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
         }

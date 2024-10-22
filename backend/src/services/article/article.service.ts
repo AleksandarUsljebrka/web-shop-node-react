@@ -75,7 +75,7 @@ export class ArticleService {
   }
 
   async findOne(id: number):Promise<Article | ApiResponse> {
-    let article  = await this.article.findOne({where:{articleId:id}, relations:['articleFeatures.name', 'category', 'photos']});
+    let article  = await this.article.findOne({where:{articleId:id}, relations:['articleFeatures.feature', 'category', 'photos']});
     
     if(article === null || article === undefined){
       return new Promise(resolve =>{
