@@ -87,12 +87,11 @@ export class ArticleService {
     updateArticleDto: UpdateArticleDto,
   ): Promise<Article | ApiResponse> {
     
-    let article = await this.article.findOne({ where: { articleId: id } });
-    console.log(article);
-
+    let article = await this.article.findOne({ where: { articleId: id }, relations:['articlePrices', 'articleFeatures'] });
+    
     if (article === null || article === undefined) {
       return new Promise((resolve) => {
-        resolve(new ApiResponse('error', -1002));
+        resolve(new ApiResponse('error', -1002, 'Article not found'));
       });
     }
     article.name = updateArticleDto.name;
@@ -104,33 +103,32 @@ export class ArticleService {
 
     let savedArticle: Article = await this.article.save(article);
 
-    let existingArticlePrice = await this.articlePrice.findOne({
-      where: { articleId: savedArticle.articleId },
-    });
+    if(savedArticle === null || savedArticle === undefined){
+      return new ApiResponse('error', -1003, 'Could not save changes');
+    }
 
-    if (existingArticlePrice) {
-      existingArticlePrice.price = updateArticleDto.price;
-      await this.articlePrice.save(existingArticlePrice);
-    } else {
+    const newPrice:string = Number(updateArticleDto.price).toFixed(2);
+    const lastPrice = article.articlePrices[article.articlePrices.length - 1];
+    const lastPriceString:string = Number(lastPrice).toFixed(2);
+
+   
+    if (lastPriceString !== newPrice) {
       let newArticlePrice: ArticlePrice = new ArticlePrice();
       newArticlePrice.articleId = savedArticle.articleId;
       newArticlePrice.price = updateArticleDto.price;
-      await this.articlePrice.save(newArticlePrice);
+      const savedArticlePrise = await this.articlePrice.save(newArticlePrice);
+
+      if(!savedArticle){
+        return new ApiResponse('error', -5003, 'Could not save the new article price');
+      }
+    
     }
 
-    for (let feature of updateArticleDto.features) {
-      let existingArticleFeature = await this.articleFeature.findOne({
-        where: {
-          articleId: savedArticle.articleId,
-          featureId: feature.featureId,
-        },
-      });
-      if (existingArticleFeature) {
-        existingArticleFeature.value = feature.value;
-        await this.articleFeature.save(existingArticleFeature);
-      }
-      else{
+    if(updateArticleDto.features !== null){
+      await this.articleFeature.remove(article.articleFeatures);
 
+  
+    for (let feature of updateArticleDto.features) {
         let newFeature: ArticleFeature = new ArticleFeature();
         newFeature.articleId = savedArticle.articleId;
         newFeature.value = feature.value;

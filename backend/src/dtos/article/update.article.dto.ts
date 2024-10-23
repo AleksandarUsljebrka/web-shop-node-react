@@ -6,10 +6,10 @@ export class UpdateArticleDto  {
     excerpt:string;
     description:string;
     status:ArticleStatusEnum;
-    isPromoted:number;
+    isPromoted:0|1;
     price:number;
     features:{
         featureId:number;
         value:string;
-    }[]
+    }[]|null;
 }
