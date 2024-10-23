@@ -112,6 +112,10 @@ export class ArticleController {
     return this.articleService.findOne(+id);
   }
 
+  @Get(':articalId/photos')
+  findAllPhotos(@Param('articalId')articalId:number):Promise<Photo[]>{
+    return  this.photoService.findAll(articalId);
+  }
   @Put(':id')
   update(@Param('id') id: number, @Body() updateArticleDto: UpdateArticleDto):Promise<Article | ApiResponse> {
     return this.articleService.update(+id, updateArticleDto);
@@ -121,4 +125,36 @@ export class ArticleController {
   remove(@Param('id') id: string) {
     return this.articleService.remove(+id);
   }
+
+  @Delete(':articleId/deletePhoto/:photoId')
+  async deletePhoto(
+    @Param('articleId') articleId:number,
+    @Param('photoId') photoId:number){
+      const photo = await this.photoService.findOne(photoId, articleId);
+
+      if(!photo){
+        return new ApiResponse('error', -5001);
+      }
+      try{
+
+        unlinkSync(StorageConfig.photo.destination + photo.imagePath);
+        unlinkSync(StorageConfig.photo.destination + 
+          StorageConfig.photo.resize.small.directory + 
+          photo.imagePath);
+          unlinkSync(StorageConfig.photo.destination + 
+            StorageConfig.photo.resize.thumb.directory + 
+            photo.imagePath);
+            
+      }
+      catch(err){
+        return new ApiResponse('error',-5001);
+      }
+      const deleteResult = await this.photoService.delete(photoId);
+        
+      if(!deleteResult){
+        return new ApiResponse('error', -4004, 'Photo not found');
+      }
+      return new ApiResponse('ok', 0, 'One photo deleted ');
+
+    }
 }
