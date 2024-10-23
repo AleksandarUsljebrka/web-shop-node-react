@@ -21,6 +21,7 @@ import { ArticleModule } from './article.module';
 import { AdministratorModule } from './administrator.module';
 import { AuthMiddleware } from 'src/middleware/auth.middleware';
 import { FeatureModule } from './feature.module';
+import { AuthModule } from './auth.module';
 
 @Module({
   imports: [
@@ -48,7 +49,8 @@ import { FeatureModule } from './feature.module';
     AdministratorModule,
     CategoryModule,
     ArticleModule,
-    FeatureModule
+    FeatureModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [],

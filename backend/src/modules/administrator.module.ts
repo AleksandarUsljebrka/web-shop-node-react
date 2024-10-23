@@ -11,7 +11,7 @@ import { AdministratorService } from 'src/services/administrator/administrator.s
       Administrator
     ])
   ],
-  controllers: [AdministratorController,AuthController],
+  controllers: [AdministratorController],
   providers: [AdministratorService],
   exports:[AdministratorService]
 })
