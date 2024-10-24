@@ -1,13 +1,17 @@
 import { HttpException, HttpStatus, Injectable, NestMiddleware } from "@nestjs/common";
 import { NextFunction, Request, Response } from "express";
-import { JwtDataAdministratorDto } from "src/dtos/administrator/jwt.data.administrator.dto";
+import { JwtDataDto } from "src/dtos/auth/jwt.data.dto";
 import { AdministratorService } from "src/services/administrator/administrator.service";
 import * as jwt from 'jsonwebtoken';
 import { jwtSecret } from "config/jwt.secret";
+import { UserService } from "src/services/user/user.service";
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware{
-    constructor(private readonly administratorService:AdministratorService){}
+    constructor(
+        private readonly administratorService:AdministratorService,
+        private readonly userService:UserService
+    ){}
 
     async use(req: Request, res: Response, next: NextFunction) {
         if(!req.headers.authorization){
@@ -21,7 +25,7 @@ export class AuthMiddleware implements NestMiddleware{
         }
         const tokenString = tokenParts[1];
 
-        let jwtData:JwtDataAdministratorDto;
+        let jwtData:JwtDataDto;
         
         try{
             jwtData = jwt.verify(tokenString, jwtSecret);
@@ -38,11 +42,19 @@ export class AuthMiddleware implements NestMiddleware{
             throw new HttpException("Bad token found", HttpStatus.UNAUTHORIZED);
         }
         
-        const admin = await this.administratorService.findById(jwtData.administratorId);
-        // console.log("TOKEN: ",admin);
-        if(admin === null || admin === undefined){
-            throw new HttpException("Accont doesn't exist", HttpStatus.UNAUTHORIZED);
+        if(jwtData.role ==='administrator'){
+            const admin = await this.administratorService.findById(jwtData.id);
+    
+            if(admin === null || admin === undefined){
+                throw new HttpException("Accont doesn't exist", HttpStatus.UNAUTHORIZED);
+            }
+        }else if(jwtData.role === 'user'){
+            const user = await this.userService.findById(jwtData.id);
+            if(user === null || user === undefined){
+                throw new HttpException("User account doesn't exist!",HttpStatus.UNAUTHORIZED);
+            }
         }
+            
         const currentTimestamp = new Date().getTime() / 1000;
         if(jwtData.exp <= currentTimestamp){
             throw new HttpException("Token has expired", HttpStatus.UNAUTHORIZED);

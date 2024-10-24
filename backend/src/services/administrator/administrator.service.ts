@@ -6,12 +6,11 @@ import { EditAdministratorDto } from 'src/dtos/administrator/edit.administrator.
 import { ApiResponse } from 'src/misc/api.response.class';
 import { Repository } from 'typeorm';
 import { LoginAdministratorDto } from 'src/dtos/administrator/login.administrator.dto';
-import { LoginInfoAdministratorDto } from 'src/dtos/administrator/login.info.administrator.dto';
+import { LoginInfoDto } from 'src/dtos/auth/login.info.dto';
 import * as jwt from 'jsonwebtoken';
-import { JwtDataAdministratorDto } from 'src/dtos/administrator/jwt.data.administrator.dto';
+import { JwtDataDto } from 'src/dtos/auth/jwt.data.dto';
 import { Request } from 'express';
 import { jwtSecret } from 'config/jwt.secret';
-import { resolve } from 'path';
 
 @Injectable()
 export class AdministratorService {
@@ -23,7 +22,7 @@ export class AdministratorService {
     getAll():Promise<Administrator[]>{
         return this.administrator.find();
     }
-    async login(data:LoginAdministratorDto, req:Request):Promise<LoginInfoAdministratorDto | ApiResponse>{
+    async login(data:LoginAdministratorDto, req:Request):Promise<LoginInfoDto | ApiResponse>{
         let administrator:Administrator = await this.administrator.findOne({
             where:{username:data.username}
         })
@@ -41,9 +40,10 @@ export class AdministratorService {
             return new Promise(resolve => resolve(new ApiResponse('error',-3002)));
         }
 
-        const jwtData = new JwtDataAdministratorDto();
-        jwtData.administratorId = administrator.administratorId;
-        jwtData.username = administrator.username;
+        const jwtData = new JwtDataDto();
+        jwtData.role = 'administrator';
+        jwtData.id = administrator.administratorId;
+        jwtData.identity = administrator.username;
 
         let now = new Date();
         now.setDate(now.getDate() + 14);
@@ -54,7 +54,7 @@ export class AdministratorService {
         jwtData.ua = req.headers['user-agent'];
 
         let token:string = jwt.sign(jwtData.toPlainObject(), jwtSecret);
-        const response:LoginInfoAdministratorDto = new LoginInfoAdministratorDto(
+        const response:LoginInfoDto = new LoginInfoDto(
             administrator.administratorId,
             administrator.username,
             token

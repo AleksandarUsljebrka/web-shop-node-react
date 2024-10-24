@@ -3,8 +3,15 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { ApiResponse } from 'src/misc/api.response.class';
 import { Repository } from 'typeorm';
-import { UserRegistrationDto } from 'src/dtos/auth/user.registration.dto';
+import { UserRegistrationDto } from 'src/dtos/user/user.registration.dto';
 import * as crypto from 'crypto';
+import { LoginInfoDto } from 'src/dtos/auth/login.info.dto';
+import { JwtDataDto } from 'src/dtos/auth/jwt.data.dto';
+import { Request } from 'express';
+import * as jwt from 'jsonwebtoken';
+import { jwtSecret } from 'config/jwt.secret';
+import { LoginUserDto } from 'src/dtos/user/LoginUserDto';
+
 @Injectable()
 export class UserService {
     constructor(
@@ -37,6 +44,47 @@ export class UserService {
         }
 
 
+    }
+
+    async login(data:LoginUserDto, req:Request):Promise<LoginInfoDto | ApiResponse>{
+        let user:User = await this.user.findOne({
+            where:{email:data.email}
+        })
+
+        if(user ===null || user === undefined){
+            return new Promise(resolve => resolve(new ApiResponse('error', -3001)));
+        }
+        const crypto = require('crypto');
+        
+        const passwordHash = crypto.createHash('sha512');
+        passwordHash.update(data.password);
+        const passwordHashString = passwordHash.digest('hex').toUpperCase();
+
+        if(user.passwordHash !== passwordHashString){
+            return new Promise(resolve => resolve(new ApiResponse('error',-3002)));
+        }
+
+        const jwtData = new JwtDataDto();
+        jwtData.role = 'user';
+        jwtData.id = user.userId;
+        jwtData.identity = user.email;
+
+        let now = new Date();
+        now.setDate(now.getDate() + 14);
+        const exp = now.getTime() /1000;
+        jwtData.exp = exp;
+
+        jwtData.ip = req.ip.toString();
+        jwtData.ua = req.headers['user-agent'];
+
+        let token:string = jwt.sign(jwtData.toPlainObject(), jwtSecret);
+        const response:LoginInfoDto = new LoginInfoDto(
+            user.userId,
+            user.email,
+            token
+        )
+        
+        return new Promise(resolve => resolve(response));
     }
 
     getAll():Promise<User[]>{

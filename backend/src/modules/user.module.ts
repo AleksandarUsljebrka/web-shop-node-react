@@ -4,14 +4,15 @@ import { AuthController } from 'src/controllers/api/auth.controller';
 import { User } from 'src/entities/user.entity';
 import { UserService } from 'src/services/user/user.service';
 import { AdministratorModule } from './administrator.module';
-import { UserModule } from './user.module';
 
 @Module({
   imports:[
-    AdministratorModule,
-    UserModule
+    TypeOrmModule.forFeature([
+      User
+    ]),
   ],
-  controllers: [AuthController],
-  providers: []
+  controllers: [],
+  providers: [UserService],
+  exports:[UserService]
 })
-export class AuthModule {}
+export class UserModule {}
