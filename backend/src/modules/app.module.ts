@@ -23,6 +23,7 @@ import { AuthMiddleware } from 'src/middleware/auth.middleware';
 import { FeatureModule } from './feature.module';
 import { AuthModule } from './auth.module';
 import { UserModule } from './user.module';
+import { CartModule } from './cart.module';
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { UserModule } from './user.module';
     ArticleModule,
     FeatureModule,
     AuthModule,
-    UserModule
+    UserModule,
+    CartModule
   ],
   controllers: [AppController],
   providers: [],

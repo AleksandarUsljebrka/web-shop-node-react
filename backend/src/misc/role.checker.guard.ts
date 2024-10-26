@@ -12,7 +12,7 @@ export class RoleCheckerGuard implements CanActivate{
 
         const allowToRoles = 
             this.reflector.get<('administrator' | 'user')[]>('allow_to_roles',context.getHandler());
-        console.log(role);
+        console.log(req.token);
         
         if(!allowToRoles.includes(role))
             return false;

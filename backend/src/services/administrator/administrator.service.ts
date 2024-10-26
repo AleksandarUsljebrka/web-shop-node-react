@@ -59,7 +59,7 @@ export class AdministratorService {
             administrator.username,
             token
         )
-        
+        console.log(jwtData)
         return new Promise(resolve => resolve(response));
     }
     async findById(id:number):Promise<Administrator | ApiResponse>{
