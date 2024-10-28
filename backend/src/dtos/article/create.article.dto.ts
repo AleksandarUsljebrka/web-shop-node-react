@@ -1,5 +1,6 @@
 import { ArticleStatusEnum } from 'src/misc/enums/article.status.enum';
 import * as Validator from 'class-validator';
+import { ArticleFeatureComponentDto } from './article.feature.component.dto';
 
 export class CreateArticleDto {
   @Validator.IsNotEmpty()
@@ -32,8 +33,10 @@ export class CreateArticleDto {
     maxDecimalPlaces: 2,
   })
   price: number;
-  features: {
-    featureId: number;
-    value: string;
-  }[];
+
+  @Validator.IsArray()
+  @Validator.ValidateNested({
+    always:true
+  })
+  features: ArticleFeatureComponentDto[];
 }
