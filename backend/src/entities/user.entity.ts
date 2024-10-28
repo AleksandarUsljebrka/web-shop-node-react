@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { Cart } from "./cart.entity";
+import * as Validator from 'class-validator';
 
 @Index("uq_user_email", ["email"], { unique: true })
 @Index("uq_user_phone_number", ["phoneNumber"], { unique: true })
@@ -18,18 +19,33 @@ export class User {
     unique: true,
     length: 255
   })
+  @Validator.IsNotEmpty()
+  @Validator.IsEmail({
+    allow_ip_domain:false,
+    allow_utf8_local_part:true,
+    require_tld:true
+  })
+  @Validator.Length(5,128)
   email: string;
 
   @Column({type:"varchar",
     name: "password_hash",
     length: 128
   })
+  @Validator.IsHash('sha512')
+  @Validator.IsNotEmpty()
   passwordHash: string;
 
   @Column({type:"varchar", length: 64})
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(2,64)
   forename: string;
 
   @Column({type:"varchar", length: 64})
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(2,64)
   surename: string;
 
   @Column({type:"varchar",
@@ -37,9 +53,14 @@ export class User {
     unique: true,
     length: 24,
   })
+  @Validator.IsNotEmpty()
+  @Validator.IsPhoneNumber(null)
   phoneNumber: string;
 
   @Column({type:"text", name: "postal_address" })
+  @Validator.IsNotEmpty()
+  @Validator.IsString()
+  @Validator.Length(10,512)
   postalAddress: string;
 
   @OneToMany(() => Cart, (cart) => cart.user)
