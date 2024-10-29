@@ -1,7 +1,8 @@
 import "./App.css";
 import "tailwindcss/tailwind.css"
 import Navbar from "./components/navbar/Navbar";
-import LoginUser from "./components/auth/LoginUser";
+import LoginUser from "./pages/auth/LoginUser";
+import React from 'react';
 
 function App() {
   return (

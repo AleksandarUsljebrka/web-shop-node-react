@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from 'react';
 
 interface User {
   email: string;
@@ -26,13 +27,13 @@ const LoginUser = () => {
   }
   return (
     <div className="flex items-start justify-center min-h-screen">
-      <div className="border pt-3 mt-28 rounded-md bg-gray-700  border-gray-900 w-1/2 h-fit shadow shadow-2xl">
+      <div className="border pt-3 mt-28 rounded-md bg-gray-700  border-gray-900 w-1/2 h-fit shadow-2xl">
         <h2 className="justify-self-center text-sm md:text-xl lg:text-3xl text-white">
           User Login
         </h2>
         <form
             onSubmit={onSubmit} 
-            className="flex flex-col pb-20 pt-5 text-white text-sm md:text-xl lg:text-2xl w-4/6 justify-self-center">
+            className="flex flex-col  pt-5 text-white text-sm md:text-xl lg:text-2xl w-4/6 justify-self-center">
           <label className="mb-2">
             Email
           </label>
@@ -61,6 +62,9 @@ const LoginUser = () => {
             Log in
           </button>
         </form>
+        <div className="mt-10 mb-10 justify-self-center text-white text-sm md:text-xl lg:text-2xl">
+            Don't have an account? Register <a href="/register" className="text-blue-400 hover:text-blue-500 transition duration-200">here.</a>
+        </div>
       </div>
     </div>
   );
