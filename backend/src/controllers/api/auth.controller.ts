@@ -25,7 +25,7 @@ export class AuthController {
   userLogin(@Body() data:LoginUserDto, @Req() req:Request):Promise<ApiResponse | LoginInfoDto>{
     return this.userService.login(data, req);
   }
-  @Post('register')
+  @Post('user/register')
   register(@Body() data:UserRegistrationDto):Promise<User | ApiResponse>{
     return this.userService.register(data);
   }
