@@ -10,7 +10,7 @@ import { JwtDataDto } from 'src/dtos/auth/jwt.data.dto';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { jwtSecret } from 'config/jwt.secret';
-import { LoginUserDto } from 'src/dtos/user/LoginUserDto';
+import { LoginUserDto } from 'src/dtos/user/login.user.dto';
 
 @Injectable()
 export class UserService {
