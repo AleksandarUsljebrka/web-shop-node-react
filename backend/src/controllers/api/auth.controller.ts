@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, Req } from '@nestjs/co
 import { Request } from 'express';
 import { LoginAdministratorDto } from 'src/dtos/administrator/login.administrator.dto';
 import { LoginInfoDto } from 'src/dtos/auth/login.info.dto';
-import { LoginUserDto } from 'src/dtos/user/LoginUserDto';
+import { LoginUserDto } from 'src/dtos/user/login.user.dto';
 import { UserRegistrationDto } from 'src/dtos/user/user.registration.dto';
 import { User } from 'src/entities/user.entity';
 import { ApiResponse } from 'src/misc/api.response.class';
