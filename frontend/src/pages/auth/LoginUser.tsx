@@ -1,5 +1,8 @@
 import { useState } from "react";
 import React from 'react';
+import { authService } from "../../services/AuthService";
+import tokenHelper from "../../helpers/tokenHelper";
+import { useNavigate } from "react-router-dom";
 
 interface User {
   email: string;
@@ -11,6 +14,10 @@ let initialUser: User = {
 };
 const LoginUser = () => {
   const [user, setUser] = useState<User>(initialUser);
+  const [error, setError] = useState<string>('');
+  const {login} = authService;
+  const {saveToken} = tokenHelper;
+  const navigate = useNavigate();
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target;
@@ -20,10 +27,19 @@ const LoginUser = () => {
       [name]: value,
     }));
   }
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>)=> {
     e.preventDefault();
-
-    console.log(user );
+    
+    setError('');
+    try{
+      const response = await login(user);
+      saveToken(response.token);
+      navigate('/')
+      console.log(response);
+    }catch(error:any){
+      setError(error?.message || "Login failed");
+    }
+    console.log(user)
   }
   return (
     <div className="flex items-start justify-center min-h-screen">
@@ -62,7 +78,7 @@ const LoginUser = () => {
             Log in
           </button>
         </form>
-        <div className="mt-10 mb-10 justify-self-center text-white text-sm md:text-xl lg:text-2xl">
+        <div className="mt-10 mb-10 justify-self-center pl-3 pr-3 text-white text-sm md:text-xl lg:text-2xl">
             Don't have an account? Register <a href="/register" className="text-blue-400 hover:text-blue-500 transition duration-200">here.</a>
         </div>
       </div>

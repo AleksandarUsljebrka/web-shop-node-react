@@ -5,7 +5,7 @@ const Navbar = () => {
     <>
         <nav className=' bg-gray-800 fixed top-0 left-0 w-screen flex justify-between items-center  '>
             <div className='flex ml-10'>
-                <img src={shopImage} alt="Logo" className='w-10 h-10 mr-3'/>
+                <img src={shopImage} alt="Logo" className='w-7 h-7 md:w-8 md:h-8 lg:w-10 lg:h-10 mr-3'/>
                 <h2 className='text-white text-sm md:text-xl lg:text-2xl  pointer-events-none'>WebShop</h2>
             </div>
             <ul className='flex justify-around w-1/2 text-white h-20 items-center lg:text-2xl md:text-xl text-sm ' >
