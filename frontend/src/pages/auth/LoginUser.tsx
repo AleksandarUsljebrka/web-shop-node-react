@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import React from 'react';
 import { authService } from "../../services/AuthService";
-import tokenHelper from "../../helpers/tokenHelper";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 interface User {
   email: string;
@@ -16,8 +15,8 @@ const LoginUser = () => {
   const [user, setUser] = useState<User>(initialUser);
   const [error, setError] = useState<string>('');
   const {login} = authService;
-  const {saveToken} = tokenHelper;
-  const navigate = useNavigate();
+  
+  const  {handleLogin} = useAuth();
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     const { value, name } = e.target;
@@ -33,8 +32,7 @@ const LoginUser = () => {
     setError('');
     try{
       const response = await login(user);
-      saveToken(response.token);
-      navigate('/')
+      await handleLogin(response);
       console.log(response);
     }catch(error:any){
       setError(error?.message || "Login failed");

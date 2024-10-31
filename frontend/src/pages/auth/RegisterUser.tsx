@@ -2,16 +2,9 @@ import { useState } from "react";
 import React from "react";
 import { authService } from "../../services/AuthService";
 import { useNavigate } from "react-router-dom";
+import { RegisterUserType } from "../../types/AuthTypes";
 
-interface User {
-  email: string;
-  password: string;
-  forename: string;
-  surename: string;
-  postalAddress: string;
-  phoneNumber: string;
-}
-let initialUser: User = {
+let initialUser: RegisterUserType = {
   email: "",
   password: "",
   forename: "",
@@ -20,7 +13,7 @@ let initialUser: User = {
   phoneNumber: "",
 };
 const RegisterUser = () => {
-  const [user, setUser] = useState<User>(initialUser);
+  const [user, setUser] = useState<RegisterUserType>(initialUser);
   const {register} = authService;
   const [error,setError] = useState<string>('');
   const navigate = useNavigate();
