@@ -2,17 +2,15 @@ import { useContext, useState } from "react";
 import React from 'react';
 import { authService } from "../../services/AuthService";
 import { useAuth } from "../../context/AuthContext";
+import { LoginUserType } from "../../types/AuthTypes";
 
-interface User {
-  email: string;
-  password: string;
-}
-let initialUser: User = {
+
+let initialUser: LoginUserType = {
   email: "",
   password: "",
 };
 const LoginUser = () => {
-  const [user, setUser] = useState<User>(initialUser);
+  const [user, setUser] = useState<LoginUserType>(initialUser);
   const [error, setError] = useState<string>('');
   const {login} = authService;
   

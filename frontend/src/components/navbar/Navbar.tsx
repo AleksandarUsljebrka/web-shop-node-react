@@ -3,7 +3,11 @@ import shopImage from '../../images/online-shop.png';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
-    const {isLoggedIn} = useAuth();
+    const {isLoggedIn, logout} = useAuth();
+
+    const handleLogout = ()=>{
+        logout();
+    }
     return (
     <>
         <nav className=' bg-gray-800 fixed top-0 left-0 w-screen flex justify-between items-center  '>
@@ -19,6 +23,8 @@ const Navbar = () => {
                     <li><a href='/login' className='hover:text-gray-400 transition duration-300'>Log in</a></li>
                     
                 }
+                {isLoggedIn && <li><button onClick={handleLogout} className='hover:text-gray-400 transition duration-300'>Logout</button></li>}
+
             </ul>
         </nav>
     </>
