@@ -6,7 +6,10 @@ interface UserCredentials {
     email: string;
     password: string;
   }
-  
+interface AdminCredentials{
+    username:string;
+    password:string;
+}
   interface RegisterData  {
     email: string;
     password: string;
@@ -33,6 +36,16 @@ export const authService = {
             return response;
         }catch(error:any){
             throw new Error(error.response?.data?.message || 'Register failed');
+        }
+    },
+    loginAdmin:async (data:AdminCredentials) =>{  
+        try{
+            const response = await axios.post(`${baseUrl}/auth/administrator/login`,data);
+            console.log(response);
+            
+            return response.data;
+        }catch(error:any){
+            throw new Error(error.response?.data?.message || 'Login failed');
         }
     }
 }

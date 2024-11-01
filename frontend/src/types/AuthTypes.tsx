@@ -1,3 +1,4 @@
+import { JwtPayload } from "jwt-decode";
 import { ReactNode } from "react";
 
 export interface AuthContextType {
@@ -5,6 +6,8 @@ export interface AuthContextType {
     logout: () => void;
     isLoggedIn: boolean;
     loadUser: () => void;
+    user:User,
+    role:string;
     
 }
 
@@ -17,7 +20,10 @@ export interface LoginUserType {
     password: string;
   }
 
-  
+export interface LoginAdminType{
+    username:string;
+    password:string;
+}
 export interface RegisterUserType {
     email: string;
     password: string;
@@ -25,4 +31,15 @@ export interface RegisterUserType {
     surename: string;
     postalAddress: string;
     phoneNumber: string;
+  }
+export interface User{
+    identity:string;
+    role:string;
+}
+
+export interface TokenPayload extends JwtPayload {
+    id?: string;
+    username?: string;
+    identity?: string;
+    role?:string;
   }

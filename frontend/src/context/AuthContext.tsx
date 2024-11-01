@@ -1,22 +1,37 @@
-import React, { createContext, useState, useContext } from "react";
-import tokenHelper, { removeToken, saveToken } from "../helpers/tokenHelper";
+import React, { createContext, useState, useContext, useCallback } from "react";
+import tokenHelper from "../helpers/tokenHelper";
 import { useNavigate } from "react-router-dom";
-import { AuthContextProviderProps, AuthContextType } from "../types/AuthTypes";
+import {
+  AuthContextProviderProps,
+  AuthContextType,
+  User,
+} from "../types/AuthTypes";
 
 export const AuthContext = createContext<AuthContextType | undefined>(
   undefined
 );
-
+let initialUser: User = {
+  identity: "",
+  role: "",
+};
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [user, setUser] = useState<User>(initialUser);
+
   const navigate = useNavigate();
 
   const handleLogin = async (response: { token: string }) => {
     try {
-      saveToken(response.token);
+      tokenHelper.saveToken(response.token);
       setIsLoggedIn(true);
+      console.log("ident",tokenHelper.getTokenIdentity());
+
+      const userData = tokenHelper.getUser();
+      if(userData)
+        setUser(userData);
+
       navigate("/");
     } catch (error) {
       alert(error);
@@ -24,21 +39,26 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   };
 
   const logout = async () => {
-    removeToken();
+    tokenHelper.removeToken();
 
     setIsLoggedIn(false);
     navigate("/login");
   };
 
-  const loadUser = () => {
-    if (!tokenHelper.isLoggedin()) return;
-    if (tokenHelper.isTokenExpired()) {
-      removeToken();
+  const loadUser = useCallback(() => {
+    if (!tokenHelper.isLoggedin()) {
+      setUser(initialUser);
       return;
     }
-
+    if (tokenHelper.isTokenExpired()) {
+      tokenHelper.removeToken();
+      setUser(initialUser);
+      return;
+    }
+    const userData = tokenHelper.getUser();
+    if (userData) setUser(userData);
     setIsLoggedIn(tokenHelper.isLoggedin());
-  };
+  }, []);
 
   return (
     <AuthContext.Provider
@@ -47,6 +67,8 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         logout: logout,
         loadUser: loadUser,
         isLoggedIn: isLoggedIn,
+        user: user,
+        role:user.role
       }}
     >
       {children}

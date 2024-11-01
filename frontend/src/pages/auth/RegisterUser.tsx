@@ -3,6 +3,7 @@ import React from "react";
 import { authService } from "../../services/AuthService";
 import { useNavigate } from "react-router-dom";
 import { RegisterUserType } from "../../types/AuthTypes";
+import Button from "../../components/Button";
 
 let initialUser: RegisterUserType = {
   email: "",
@@ -121,12 +122,7 @@ const RegisterUser = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="m-auto border rounded-md w-16 text-sm lg:w-40 lg:text-2xl mt-6 p-2 bg-gray-600 hover:bg-gray-400 transition duration-300"
-          >
-            Register
-          </button>
+         <Button buttonText="Register" className="m-auto"/>
         </form>
         <div className="mt-10 mb-10 justify-self-center text-white text-sm md:text-xl lg:text-2xl">
           Already have an account? Log in {" "}

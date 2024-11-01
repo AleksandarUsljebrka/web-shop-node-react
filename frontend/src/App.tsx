@@ -7,6 +7,7 @@ import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-route
 import Home from "./pages/Home";
 import RegisterUser from "./pages/auth/RegisterUser";
 import { useAuth } from "./context/AuthContext";
+import LoginAdmin from "./pages/auth/LoginAdmin";
 
 function App() {
   const {loadUser, isLoggedIn} = useAuth();
@@ -24,6 +25,8 @@ function App() {
         <Routes>
           <Route path="/" element={isLoggedIn? <Home/>:<Navigate to='/login'/>}/>
           <Route path="/login" element={!isLoggedIn ? <LoginUser/> : <Navigate to='/'/>}/>
+          <Route path="/administrator/login" element={!isLoggedIn ? <LoginAdmin/> : <Navigate to='/'/>}/>
+
           <Route path="/register" element={!isLoggedIn? <RegisterUser/>:<Navigate to='/'/>}/>
 
         </Routes>

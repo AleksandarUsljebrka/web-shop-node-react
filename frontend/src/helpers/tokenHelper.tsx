@@ -1,76 +1,94 @@
 import { jwtDecode, JwtPayload } from "jwt-decode";
+import { TokenPayload, User } from "../types/AuthTypes";
 
-interface TokenPayload extends JwtPayload {
-    id?: string;
-    username?: string;
-    email?: string;
+const saveToken = (token: string): void => {
+  if (!token) {
+    return;
+  }
+  window.localStorage.setItem("token", token);
+};
+
+const removeToken = (): void => {
+  window.localStorage.removeItem("token");
+};
+
+const getToken = (): TokenPayload | null => {
+  const token = window.localStorage.getItem("token");
+
+  if (!token) {
+    return null;
   }
 
-export const saveToken = (token:string):void => {
-    if (!token) {
-      return;
-    }
-    window.localStorage.setItem('token', token);
-  };
-  
-  export const removeToken = ():void => {
-    window.localStorage.removeItem('token');
-  };
+  try {
+    const decoded = jwtDecode<TokenPayload>(token);
 
-  export const getToken = ():JwtPayload | null => {
-    const token = window.localStorage.getItem('token');
-  
-    if (!token) {
-      return null;
-    }
-  
-    try {
-      const decoded = jwtDecode<JwtPayload>(token);
-  
-      return decoded;
-    } catch (exception) {
-      return null;
-    }
-  };
-  export const getRawToken = ():string|null => {
-    const token = window.localStorage.getItem('token');
-    console.log(token);
-    return token;
-  };
-  const isTokenExpired = ():boolean => {
-    const token = getToken();
-  
-    if(!token || !token.exp)
-        return true;
-    const expirationTime = token.exp;
-    const currentTime = Math.floor(Date.now() / 1000);
-  
-    return expirationTime < currentTime;
-  };
-  
-  export const isLoggedin = ():boolean => {
-    const token = window.localStorage.getItem('token');
-  
-    if (!token) {
-      return false;
-    }
-  
-    const decoded = getToken();
-  
-    if (!decoded) {
-      return false;
-    }
-  
-    return true;
-  };
+    return decoded;
+  } catch (exception) {
+    return null;
+  }
+};
+const getRawToken = (): string | null => {
+  const token = window.localStorage.getItem("token");
+  console.log(token);
+  return token;
+};
+const isTokenExpired = (): boolean => {
+  const token = getToken();
 
- 
-  const tokenHelper ={
-    removeToken,
-    saveToken,
-    isLoggedin,
-    isTokenExpired,
-    getToken,
-    getRawToken
-  };
-  export default tokenHelper;
+  if (!token || !token.exp) return true;
+  const expirationTime = token.exp;
+  const currentTime = Math.floor(Date.now() / 1000);
+
+  return expirationTime < currentTime;
+};
+
+const isLoggedin = (): boolean => {
+  const token = window.localStorage.getItem("token");
+
+  if (!token) {
+    return false;
+  }
+
+  const decoded = getToken();
+
+  if (!decoded) {
+    return false;
+  }
+
+  return true;
+};
+const getTokenRole = (): string | null => {
+  const decoded = getToken();
+  if (decoded && decoded.role) return decoded.role;
+  return null;
+};
+const getTokenIdentity = (): string | null => {
+  const decoded = getToken();
+  if (decoded && decoded.identity) return decoded.identity;
+  return null;
+};
+const getUser = (): User | null => {
+  const role = getTokenRole();
+  const identity = getTokenIdentity();
+  if (role && identity) {
+    const user: User = {
+      role: role,
+      identity: identity,
+    };
+    return user;
+  }
+  return null;
+};
+
+const tokenHelper = {
+  removeToken,
+  saveToken,
+  isLoggedin,
+  isTokenExpired,
+  getToken,
+  getRawToken,
+  getTokenRole,
+  getTokenIdentity,
+  getUser,
+};
+export default tokenHelper;
