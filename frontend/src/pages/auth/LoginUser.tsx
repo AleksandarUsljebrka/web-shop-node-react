@@ -17,7 +17,7 @@ const LoginUser = () => {
 
   const {login} = authService;
   
-  const  {handleLogin, isLoggedIn, user:userContextData, role} = useAuth();
+  const  {handleLogin, isLoggedIn, user:userContextData} = useAuth();
 
   
 
@@ -35,8 +35,8 @@ const LoginUser = () => {
     setError('');
     try{
       const response = await login(user);
-      await handleLogin(response);
-      console.log("role",role);
+      await handleLogin(response.data);
+      console.log("role",userContextData.role);
       console.log("LOGG", isLoggedIn);
       
     }catch(error:any){
@@ -49,9 +49,10 @@ const LoginUser = () => {
     <LoginForm
       onChange={onChange}
       onSubmit={onSubmit}
-      title="User Log in"
+      title="User Login"
       identity="email"
       user={user}
+      buttonText="Log in"
     />
   );
 };

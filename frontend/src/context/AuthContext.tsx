@@ -13,11 +13,13 @@ export const AuthContext = createContext<AuthContextType | undefined>(
 let initialUser: User = {
   identity: "",
   role: "",
+  token:''
 };
 export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   children,
 }) => {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User>(initialUser);
 
   const navigate = useNavigate();
@@ -26,11 +28,10 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     try {
       tokenHelper.saveToken(response.token);
       setIsLoggedIn(true);
-      console.log("ident",tokenHelper.getTokenIdentity());
+      console.log("ident", tokenHelper.getTokenIdentity());
 
       const userData = tokenHelper.getUser();
-      if(userData)
-        setUser(userData);
+      if (userData) setUser(userData);
 
       navigate("/");
     } catch (error) {
@@ -38,14 +39,15 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     }
   };
 
-  const logout = async () => {
+  const logout = async (navigateRoute?: string) => {
     tokenHelper.removeToken();
 
     setIsLoggedIn(false);
-    navigate("/login");
+    navigate(navigateRoute ? navigateRoute : "/login");
   };
 
-  const loadUser = useCallback(() => {
+  const loadUser = useCallback(async() => {
+    setIsLoading(false);
     if (!tokenHelper.isLoggedin()) {
       setUser(initialUser);
       return;
@@ -55,9 +57,9 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       setUser(initialUser);
       return;
     }
+    setIsLoggedIn(tokenHelper.isLoggedin());
     const userData = tokenHelper.getUser();
     if (userData) setUser(userData);
-    setIsLoggedIn(tokenHelper.isLoggedin());
   }, []);
 
   return (
@@ -68,7 +70,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
         loadUser: loadUser,
         isLoggedIn: isLoggedIn,
         user: user,
-        role:user.role
+        isLoading:isLoading
       }}
     >
       {children}

@@ -10,8 +10,9 @@ interface LoginFormProps{
     admin?:LoginAdminType
     title:string;
     identity:string;
+    buttonText:string;
 }
-const LoginForm:React.FC<LoginFormProps> = ({onSubmit, onChange, user,admin,title, identity}) => {
+const LoginForm:React.FC<LoginFormProps> = ({onSubmit, onChange,buttonText, user,admin,title, identity}) => {
   let isAdmin = admin!==null && admin!==undefined;
 
   if(isAdmin)
@@ -49,14 +50,19 @@ const LoginForm:React.FC<LoginFormProps> = ({onSubmit, onChange, user,admin,titl
           onChange={(e) => onChange(e)}
         />
         
-       <Button buttonText="Log in"/>
+       <Button buttonText={buttonText}/>
       </form>
      {!isAdmin && <div className="mt-10 mb-10 justify-self-center pl-3 pr-3 text-white text-sm md:text-xl lg:text-2xl">
           Don't have an account? Register <a href="/register" className="text-blue-400 hover:text-blue-500 transition duration-200">here.</a>
       </div>}
 
       <div className="mt-10 mb-10 justify-self-center pl-3 pr-3 text-white text-sm md:text-xl lg:text-2xl">
-           <a href={!isAdmin? "/administrator/login":"/login"} className="text-blue-400 hover:text-blue-500 transition duration-200">{!isAdmin?"Login as an administrator":"Login as an user"}</a>
+           <a href={!isAdmin? "/administrator/login":"/login"} className="text-blue-400 hover:text-blue-500 transition duration-200">
+           {
+            (isAdmin && buttonText ==='Create')?"":
+            isAdmin?"Log in as an user":
+            "Log in as an administrator"
+           }</a>
       </div>
     </div>
   </div>

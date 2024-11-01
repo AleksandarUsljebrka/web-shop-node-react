@@ -29,7 +29,6 @@ const getToken = (): TokenPayload | null => {
 };
 const getRawToken = (): string | null => {
   const token = window.localStorage.getItem("token");
-  console.log(token);
   return token;
 };
 const isTokenExpired = (): boolean => {
@@ -70,10 +69,12 @@ const getTokenIdentity = (): string | null => {
 const getUser = (): User | null => {
   const role = getTokenRole();
   const identity = getTokenIdentity();
+  const token = getRawToken();
   if (role && identity) {
     const user: User = {
       role: role,
       identity: identity,
+      token:token
     };
     return user;
   }

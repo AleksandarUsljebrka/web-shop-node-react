@@ -3,7 +3,7 @@ import shopImage from '../../images/online-shop.png';
 import { useAuth } from '../../context/AuthContext';
 
 const Navbar = () => {
-    const {isLoggedIn, logout} = useAuth();
+    const {isLoggedIn, logout, user} = useAuth();
 
     const handleLogout = ()=>{
         logout();
@@ -23,6 +23,8 @@ const Navbar = () => {
                     <li><a href='/login' className='hover:text-gray-400 transition duration-300'>Log in</a></li>
                     
                 }
+                {(isLoggedIn && user.role==='administrator') && <li><a href="/administrator/createAdmin" className='hover:text-gray-400 transition duration-300'>New Admin</a></li>}
+
                 {isLoggedIn && <li><button onClick={handleLogout} className='hover:text-gray-400 transition duration-300'>Logout</button></li>}
 
             </ul>

@@ -25,7 +25,7 @@ export const authService = {
             const response = await axios.post(`${baseUrl}/auth/user/login`,data);
             console.log(response);
             
-            return response.data;
+            return response;
         }catch(error:any){
             throw new Error(error.response?.data?.message || 'Login failed');
         }
@@ -43,9 +43,23 @@ export const authService = {
             const response = await axios.post(`${baseUrl}/auth/administrator/login`,data);
             console.log(response);
             
-            return response.data;
+            return response;
         }catch(error:any){
             throw new Error(error.response?.data?.message || 'Login failed');
         }
-    }
+    },
+    createAdmin:async (data:AdminCredentials, token:string|null) =>{
+        try{
+            const response = await axios.post(`${baseUrl}/api/administrator`,data,
+                {
+                    headers:{
+                        Authorization:`Bearer ${token}`
+                    }
+                }
+            );
+            return response;
+        }catch(error:any){
+            throw new Error(error.response?.data?.message || 'Creating admin failed');
+        }
+    },
 }

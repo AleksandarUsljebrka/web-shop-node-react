@@ -3,12 +3,11 @@ import { ReactNode } from "react";
 
 export interface AuthContextType {
     handleLogin: (data: { token: string }) => Promise<void>;
-    logout: () => void;
+    logout: (navigateRoute?:string) => Promise<void>;
     isLoggedIn: boolean;
-    loadUser: () => void;
+    loadUser: () => Promise<void>;
     user:User,
-    role:string;
-    
+    isLoading:boolean;
 }
 
 export interface AuthContextProviderProps {
@@ -35,6 +34,7 @@ export interface RegisterUserType {
 export interface User{
     identity:string;
     role:string;
+    token:string|null;
 }
 
 export interface TokenPayload extends JwtPayload {
