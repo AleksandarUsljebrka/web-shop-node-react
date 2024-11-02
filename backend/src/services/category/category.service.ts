@@ -32,8 +32,8 @@ export class CategoryService {
     });
   }
 
-  findAll() {
-    return this.category.find({
+  async findAll() {
+    const categories = await this.category.find({
       relations: [
         'categories',
         'articles',
@@ -42,6 +42,17 @@ export class CategoryService {
         'articles.photos'
       ],
     });
+
+    categories.forEach(category => {
+      category.articles.forEach(article => {
+        if (article.articlePrices && article.articlePrices.length > 0) {
+          const lastPrice = article.articlePrices[article.articlePrices.length - 1];
+          const lastPriceString:string = Number(lastPrice).toFixed(2);
+          article.articlePrices = [lastPrice];
+        }
+      });
+    });
+    return categories;
   }
 
   async findOne(id: number): Promise<Category | ApiResponse> {
