@@ -50,7 +50,7 @@ const LoginForm:React.FC<LoginFormProps> = ({onSubmit, onChange,buttonText, user
           onChange={(e) => onChange(e)}
         />
         
-       <Button buttonText={buttonText}/>
+       <Button buttonText={buttonText} className='mt-6'/>
       </form>
      {!isAdmin && <div className="mt-10 mb-10 justify-self-center pl-3 pr-3 text-white text-sm md:text-xl lg:text-2xl">
           Don't have an account? Register <a href="/register" className="text-blue-400 hover:text-blue-500 transition duration-200">here.</a>

@@ -1,7 +1,6 @@
 import axios from "axios";
 
-const baseUrl = 'http://localhost:3000';
-
+import { baseUrl } from "../config/Config";
 interface UserCredentials {
     email: string;
     password: string;
