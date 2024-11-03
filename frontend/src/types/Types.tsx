@@ -3,9 +3,11 @@ export interface CategoryType{
     name:string;
     imagePath:string;
     parentCategoryId:number|null;
+    articles:Article[] | null;
+    categories:CategoryType[] | null;
 }
 
-export interface Articles{
+export interface Article{
     articleId:number;
     name:string;
     categoryId:number;
@@ -14,16 +16,25 @@ export interface Articles{
     status:'available'|'visible'|'hidden';
     isPromoted:1|0;
     createdAt:Date|string;
-    articleFeatures:ArticleFeatures;
-
+    articleFeatures:ArticleFeatures[]|null;
+    articlePrices:ArticlePrice[]|null;
+    photos:Photo[];
 }
 
+//-------------------------------------
+export interface ArticlePrice{
+    articlePriceId: number,
+    articleId: number;
+    price: string;
+    createdAt: Date | string;
+}
+
+//-------------------------------------
 export interface ArticleFeatures{
         articleFeatureId: number;
         articleId: number;
         featureId: number,
         value: string;
-        feature:Feature;
 } 
 
 export interface Feature{    
@@ -31,4 +42,9 @@ export interface Feature{
         name:string;
         categoryId: number;
     
+}
+export interface Photo{
+    photoId:number;
+    articleId:number;
+    imagePath:string;
 }
