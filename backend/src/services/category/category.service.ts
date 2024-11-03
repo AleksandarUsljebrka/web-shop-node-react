@@ -36,30 +36,33 @@ export class CategoryService {
     const categories = await this.category.find({
       relations: [
         'categories',
-        'articles',
-        'articles.articleFeatures',
-        'articles.articlePrices',
-        'articles.photos'
       ],
     });
 
-    categories.forEach(category => {
-      category.articles.forEach(article => {
-        if (article.articlePrices && article.articlePrices.length > 0) {
-          const lastPrice = article.articlePrices[article.articlePrices.length - 1];
-          const lastPriceString:string = Number(lastPrice).toFixed(2);
-          article.articlePrices = [lastPrice];
-        }
-      });
-    });
+   
     return categories;
   }
 
   async findOne(id: number): Promise<Category | ApiResponse> {
     let category = await this.category.findOne({
       where: { categoryId: id },
-      relations: ['categories'],
+      relations: [
+        'categories',
+        'articles',
+        'articles.articleFeatures',
+        'articles.articlePrices',
+        'articles.photos'
+      ],
+     
     });
+        category.articles.forEach(article => {
+          if (article.articlePrices && article.articlePrices.length > 0) {
+            const lastPrice = article.articlePrices[article.articlePrices.length - 1];
+            const lastPriceString:string = Number(lastPrice).toFixed(2);
+            article.articlePrices = [lastPrice];
+          }
+        });
+      
 
     if (category === null || category === undefined) {
       return new Promise((resolve) => {
