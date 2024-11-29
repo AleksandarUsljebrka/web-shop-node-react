@@ -3,17 +3,21 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { AuthContextProvider } from './context/AuthContext';
-import { BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, RouterProvider } from 'react-router-dom';
+import router from './router/Router';
+import "tailwindcss/tailwind.css";
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    
+      
     <AuthContextProvider>
-      <App />
+      {/* <RouterProvider router={router}/> */}
+      <App/>
     </AuthContextProvider>
-    </BrowserRouter>
+    
   </React.StrictMode>
 );

@@ -22,7 +22,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<User>(initialUser);
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const handleLogin = async (response: { token: string }) => {
     try {
@@ -33,7 +33,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
       const userData = tokenHelper.getUser();
       if (userData) setUser(userData);
 
-      navigate("/");
+      // navigate("/");
     } catch (error) {
       alert(error);
     }
@@ -43,7 +43,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({
     tokenHelper.removeToken();
 
     setIsLoggedIn(false);
-    navigate(navigateRoute ? navigateRoute : "/login");
+  //  navigate(navigateRoute ? navigateRoute : "/login");
   };
 
   const loadUser = useCallback(async() => {

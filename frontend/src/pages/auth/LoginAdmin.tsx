@@ -41,13 +41,13 @@ const LoginAdmin = () => {
       setError(error?.message || "Login failed");
     }
   };
-  useEffect(()=>{
-    async function checkAndLogout(){
-        if(isLoggedIn)
-            await logout("/administrator/login");
-    }
-    checkAndLogout();
-  },[])
+  // useEffect(()=>{
+  //   async function checkAndLogout(){
+  //       if(isLoggedIn)
+  //           await logout("/administrator/login");
+  //   }
+  //   checkAndLogout();
+  // },[])
   return (
     <LoginForm
       onChange={onChange}

@@ -1,70 +1,49 @@
+import React, { useEffect } from "react";
+import { createBrowserRouter, RouterProvider, Navigate, Outlet } from "react-router-dom";
 import "./App.css";
 import "tailwindcss/tailwind.css";
 import Navbar from "./components/navbar/Navbar";
 import LoginUser from "./pages/auth/LoginUser";
-import { useEffect } from "react";
-import { Navigate, Route, Routes, useLocation } from "react-router-dom";
-import Home from "./pages/Home";
-import RegisterUser from "./pages/auth/RegisterUser";
 import { useAuth } from "./context/AuthContext";
+import RegisterUser from "./pages/auth/RegisterUser";
 import LoginAdmin from "./pages/auth/LoginAdmin";
 import CreateAdmin from "./pages/admin/CreateAdmin";
 import Loading from "./components/Loading";
-import CategoryPage from "./pages/CategoryPage";
+import CategoryNavbar from "./components/navbar/CategoryNavbar";
+import Home from "./pages/Home";
+import createRouter from "./router/Router";
+import router from "./router/Router";
 
+// Funkcija koja renderuje Loading kada je aplikacija u fazi učitavanja
 function App() {
   const { loadUser, isLoggedIn, user, isLoading } = useAuth();
-
   const isAdmin = user.role === "administrator" && isLoggedIn;
-  const location = useLocation();
 
   useEffect(() => {
-    const checkUser = async () => {
-      loadUser();
-    };
-
-    checkUser();
-  }, [loadUser, location]);
+    loadUser();
+  }, [loadUser]);
 
   if (isLoading) {
     return <Loading />;
   }
+
+  // Definisanje router-a
+// const router = createRouter(isLoggedIn, isAdmin);
+
   return (
-    <div className=" bg-gray-500">
-      <div className=" pl-5 pr-5   ">
-        <Navbar />
 
-        <Routes>
-          <Route
-            path="/"
-            element={isLoggedIn ? <Home /> : <Navigate to="/login" />}
-          />
-          <Route
-            path="/login"
-            element={!isLoggedIn ? <LoginUser /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/register"
-            element={!isLoggedIn ? <RegisterUser /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/administrator/login"
-            element={!isAdmin ? <LoginAdmin /> : <Navigate to="/" />}
-          />
-          <Route
-            path="/administrator/createAdmin"
-            element={
-              isAdmin ? <CreateAdmin /> : <Navigate to="/administrator/login" />
-            }
-          />
+    <div>
+      
 
-          <Route
-            path="/category/:categoryId"
-            element={isLoggedIn ? <CategoryPage /> : <Navigate to="/login" />}
-          />
-        </Routes>
-      </div>
-    </div>
+
+    {/* <div className="bg-gray-500">
+      <div className="pl-5 pr-5">
+         */}
+      <RouterProvider router={router} />
+
+    {/* </div> */}
+     {/* </div> */}
+     </div>
   );
 }
 
